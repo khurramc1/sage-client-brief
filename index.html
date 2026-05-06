@@ -1,1 +1,785 @@
-i
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sage Café & Grill — Client Brief</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --sage: #2D5016; --sage2: #3D6B1F;
+  --amber: #C8851C; --amber-lt: #FDF3E3; --amber-mid: rgba(200,133,28,.15);
+  --cream: #F9F5EE; --cream2: #F2EDE3;
+  --bark: #6B4C2A; --bark-lt: #F5EDE3;
+  --forest: #1A3008; --moss: #7CB342; --moss-lt: #EEF5E6;
+  --off: #F7F4EF; --border: rgba(45,80,22,.12);
+  --text: #1C1C1C; --muted: #7A7464; --white: #fff;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'DM Sans', sans-serif; background: var(--off); color: var(--text); min-height: 100vh; }
+input, textarea, select { font-family: 'DM Sans', sans-serif; }
+
+/* ── TOPBAR ── */
+#topbar {
+  position: sticky; top: 0; z-index: 300;
+  background: var(--forest); border-bottom: 2px solid var(--amber);
+  height: 60px; display: flex; align-items: center; padding: 0 28px; gap: 16px;
+}
+.tb-logo { display: flex; align-items: center; gap: 10px; }
+.tb-logo-icon {
+  width: 34px; height: 34px; background: var(--amber); border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Cormorant Garamond', serif; font-size: 16px; font-weight: 700;
+  color: var(--forest);
+}
+.tb-logo-text { font-family: 'Cormorant Garamond', serif; font-size: 20px; color: #fff; letter-spacing: .5px; }
+.tb-logo-text span { color: var(--amber); }
+.tb-subtitle { font-size: 12px; color: rgba(255,255,255,.4); font-family: 'DM Mono', monospace; letter-spacing: 2px; text-transform: uppercase; margin-left: 4px; }
+.tb-spacer { flex: 1; }
+.pbar-wrap { display: flex; align-items: center; gap: 8px; }
+.pbar { width: 120px; height: 4px; background: rgba(255,255,255,.15); border-radius: 2px; }
+.pbar-fill { height: 100%; background: linear-gradient(90deg, var(--moss), var(--amber)); border-radius: 2px; transition: width .4s; width: 0%; }
+.ppct { font-size: 11px; color: rgba(255,255,255,.45); font-family: 'DM Mono', monospace; min-width: 32px; }
+
+/* ── LAYOUT ── */
+.page-body { display: flex; min-height: calc(100vh - 60px); }
+
+/* ── SIDEBAR ── */
+.sidebar {
+  width: 230px; flex-shrink: 0; background: #fff;
+  border-right: 1px solid var(--border);
+  position: sticky; top: 60px; height: calc(100vh - 60px);
+  overflow-y: auto; padding: 12px 0;
+}
+.sidebar::-webkit-scrollbar { width: 0; }
+.sni {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 18px; cursor: pointer;
+  border-left: 3px solid transparent; transition: all .2s;
+}
+.sni:hover { background: var(--moss-lt); }
+.sni.active { border-left-color: var(--amber); background: var(--amber-lt); }
+.sni.done { border-left-color: rgba(200,133,28,.4); }
+.sni-dot {
+  width: 22px; height: 22px; border-radius: 50%;
+  border: 1.5px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 9px; font-family: 'DM Mono', monospace;
+  color: var(--muted); flex-shrink: 0; transition: all .3s;
+}
+.sni.active .sni-dot { background: var(--amber); border-color: var(--amber); color: var(--forest); font-weight: 700; }
+.sni.done .sni-dot { background: var(--amber-lt); border-color: var(--amber); color: var(--amber); font-size: 11px; }
+.sni.done .sni-dot::after { content: '✓'; }
+.sni.done .sni-dot span { display: none; }
+.sni-lbl { font-size: 12.5px; color: var(--muted); line-height: 1.3; }
+.sni.active .sni-lbl { color: var(--forest); font-weight: 600; }
+.sni.done .sni-lbl { color: var(--text); }
+
+/* ── MAIN CONTENT ── */
+.fmain { flex: 1; overflow-y: auto; height: calc(100vh - 60px); }
+.fsec { display: none; padding: 44px 52px 140px; animation: fIn .3s ease; }
+.fsec.active { display: block; }
+@keyframes fIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+.fey { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--amber); letter-spacing: 3px; text-transform: uppercase; margin-bottom: 8px; }
+.fh1 { font-family: 'Cormorant Garamond', serif; font-size: 34px; color: var(--forest); margin-bottom: 8px; line-height: 1.15; }
+.fsub { font-size: 13.5px; color: var(--muted); line-height: 1.65; max-width: 580px; margin-bottom: 28px; }
+
+/* ── FORM ELEMENTS ── */
+.fg { margin-bottom: 20px; }
+.fg.hidden { display: none !important; }
+.fl { display: block; font-size: 13px; font-weight: 600; color: var(--forest); margin-bottom: 5px; }
+.fl .r { color: var(--amber); margin-left: 2px; }
+.fhint { font-size: 11.5px; color: var(--muted); margin-bottom: 7px; line-height: 1.5; font-style: italic; }
+.fi {
+  width: 100%; border: 1.5px solid var(--border); border-radius: 8px;
+  padding: 11px 14px; font-size: 14px; font-family: 'DM Sans', sans-serif;
+  color: var(--text); background: #fff; outline: none; transition: all .2s; appearance: none;
+}
+.fi:focus { border-color: var(--amber); box-shadow: 0 0 0 3px rgba(200,133,28,.12); }
+.fi::placeholder { color: rgba(113,108,100,.4); }
+textarea.fi { resize: vertical; min-height: 90px; line-height: 1.65; }
+select.fi {
+  cursor: pointer;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 5 5-5z' fill='%232D5016'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 14px center; padding-right: 36px;
+}
+.g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.g3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+
+/* ── PILLS ── */
+.pills { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 5px; }
+.pill { position: relative; }
+.pill input { position: absolute; opacity: 0; width: 0; height: 0; }
+.pill label {
+  display: block; padding: 7px 15px;
+  border: 1.5px solid var(--border); border-radius: 20px;
+  font-size: 13px; cursor: pointer; transition: all .2s;
+  background: #fff; color: var(--muted); white-space: nowrap;
+}
+.pill label:hover { border-color: var(--amber); color: var(--text); }
+.pill input:checked + label { background: var(--amber-lt); border-color: var(--amber); color: var(--forest); font-weight: 600; }
+
+/* ── DIVIDERS / CALLOUTS ── */
+.dvdr { display: flex; align-items: center; gap: 9px; margin: 24px 0 14px; }
+.dvdr::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+.dvdr-lbl { font-size: 10px; font-family: 'DM Mono', monospace; color: var(--muted); text-transform: uppercase; letter-spacing: 1.5px; white-space: nowrap; }
+.notice { background: var(--amber-lt); border: 1.5px solid rgba(200,133,28,.3); border-radius: 8px; padding: 13px 16px; font-size: 13px; color: var(--bark); line-height: 1.6; margin-bottom: 20px; }
+.notice strong { color: var(--bark); }
+.ibox { background: var(--forest); border-radius: 9px; padding: 16px 20px; display: flex; gap: 14px; margin-bottom: 22px; }
+.ibox-icon { font-size: 20px; flex-shrink: 0; }
+.ibox-txt { font-size: 13px; color: rgba(255,255,255,.75); line-height: 1.65; }
+.ibox-txt strong { color: var(--amber); }
+
+/* ── COMPETITOR TABLE ── */
+.comp-hdr { display: grid; grid-template-columns: 1.2fr 1.5fr 1.5fr; gap: 8px; margin-bottom: 6px; }
+.comp-hdr span { font-size: 10px; font-family: 'DM Mono', monospace; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
+.comp-row { display: grid; grid-template-columns: 1.2fr 1.5fr 1.5fr; gap: 8px; margin-bottom: 8px; }
+
+/* ── KPI TABLE ── */
+.kpi-hdr { display: grid; grid-template-columns: 220px 1fr 1fr; gap: 9px; margin-bottom: 6px; }
+.kpi-hdr span { font-size: 10px; font-family: 'DM Mono', monospace; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
+.kpi-row { display: grid; grid-template-columns: 220px 1fr 1fr; gap: 9px; margin-bottom: 8px; align-items: center; }
+.kpi-m { background: var(--off); border: 1.5px solid var(--border); border-radius: 8px; padding: 10px 13px; font-size: 12.5px; font-weight: 500; color: var(--forest); }
+
+/* ── FOOTER NAV ── */
+#ffoot {
+  position: fixed; bottom: 0; left: 230px; right: 0;
+  background: rgba(249,245,238,.97); backdrop-filter: blur(8px);
+  border-top: 1px solid var(--border); padding: 14px 52px;
+  display: flex; align-items: center; justify-content: space-between; z-index: 50;
+}
+.ffoot-info { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--muted); }
+.btn-row { display: flex; gap: 9px; }
+.btn { display: flex; align-items: center; gap: 6px; padding: 10px 22px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; border: none; font-family: 'DM Sans', sans-serif; transition: all .2s; }
+.btn svg { width: 13px; height: 13px; stroke: currentColor; fill: none; stroke-width: 2; }
+.b-sec { background: var(--off); color: var(--muted); border: 1.5px solid var(--border); }
+.b-sec:hover { color: var(--text); border-color: rgba(45,80,22,.2); }
+.b-nav { background: var(--sage); color: #fff; box-shadow: 0 3px 10px rgba(45,80,22,.2); }
+.b-nav:hover { background: var(--sage2); transform: translateY(-1px); }
+.b-save { background: var(--amber); color: var(--forest); box-shadow: 0 3px 10px rgba(200,133,28,.25); }
+.b-save:hover { filter: brightness(1.05); transform: translateY(-1px); }
+
+/* ── TOAST ── */
+.toast {
+  position: fixed; bottom: 90px; right: 28px;
+  background: var(--forest); color: #fff;
+  padding: 13px 22px; border-radius: 8px; font-size: 13px; font-weight: 600;
+  transform: translateY(20px); opacity: 0; transition: all .3s;
+  pointer-events: none; z-index: 9999; border: 1px solid var(--amber);
+}
+.toast.show { transform: translateY(0); opacity: 1; }
+
+/* ── SUCCESS SCREEN ── */
+#success-screen {
+  display: none; position: fixed; inset: 0; background: var(--forest);
+  z-index: 999; flex-direction: column; align-items: center; justify-content: center; gap: 20px;
+}
+#success-screen.show { display: flex; }
+.success-icon { font-size: 56px; }
+.success-title { font-family: 'Cormorant Garamond', serif; font-size: 36px; color: #fff; }
+.success-sub { font-size: 14px; color: rgba(255,255,255,.6); text-align: center; max-width: 400px; line-height: 1.7; }
+.success-btn { margin-top: 8px; padding: 12px 28px; background: var(--amber); color: var(--forest); border: none; border-radius: 8px; font-size: 14px; font-weight: 700; cursor: pointer; font-family: 'DM Sans', sans-serif; }
+
+@media (max-width: 700px) {
+  .sidebar { display: none; }
+  .fmain { height: calc(100vh - 60px); }
+  .fsec { padding: 28px 20px 120px; }
+  #ffoot { left: 0; padding: 12px 20px; }
+  .g2, .g3 { grid-template-columns: 1fr; }
+  .kpi-hdr, .kpi-row { grid-template-columns: 1fr; }
+  .kpi-m { display: none; }
+  .comp-hdr, .comp-row { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div id="topbar">
+  <div class="tb-logo">
+    <div class="tb-logo-icon">S</div>
+    <div class="tb-logo-text">SAGE <span>Café & Grill</span></div>
+  </div>
+  <div class="tb-subtitle">— Client Brief</div>
+  <div class="tb-spacer"></div>
+  <div class="pbar-wrap">
+    <div class="pbar"><div class="pbar-fill" id="pbar"></div></div>
+    <div class="ppct" id="ppct">0%</div>
+  </div>
+</div>
+
+<div class="page-body">
+
+<!-- SIDEBAR -->
+<div class="sidebar"><div id="fnav"></div></div>
+
+<!-- MAIN -->
+<div class="fmain" id="fmain">
+
+<!-- ── S1: Restaurant Overview ── -->
+<div class="fsec active" data-s="1">
+  <div class="fey">Section 01 — 09</div>
+  <h1 class="fh1">Restaurant Overview</h1>
+  <p class="fsub">Core details about your restaurant. We've pre-filled what we know from our research — please confirm, correct, or add anything that's changed.</p>
+  <div class="g2">
+    <div class="fg"><label class="fl">Restaurant Name <span class="r">*</span></label><input class="fi" type="text" id="f_co" value="Sage Café & Grill"></div>
+    <div class="fg"><label class="fl">Branch / Location</label><input class="fi" type="text" id="f_branch" value="Lahore — Gulberg III (Mahmood Kasuri Road)"></div>
+  </div>
+  <div class="fg"><label class="fl">Full Address</label><input class="fi" type="text" id="f_addr" value="Ground Floor, 57 B-3, Mahmood Kasuri Road, Block B, Gulberg III, Lahore"></div>
+  <div class="g2">
+    <div class="fg"><label class="fl">Phone Numbers</label><input class="fi" type="text" id="f_tel" value="04237897782 / 03235739536"></div>
+    <div class="fg"><label class="fl">Operating Hours</label><input class="fi" type="text" id="f_hours" value="12:00 PM – 12:00 AM (daily)"></div>
+  </div>
+  <div class="g2">
+    <div class="fg"><label class="fl">Instagram Handle</label><input class="fi" type="text" id="f_ig" value="@thesagecafeandgrill"></div>
+    <div class="fg"><label class="fl">Facebook Page</label><input class="fi" type="text" id="f_fb" value="thesagecafeandgrill"></div>
+  </div>
+  <div class="g2">
+    <div class="fg"><label class="fl">Website (if any)</label><input class="fi" type="text" id="f_web" placeholder="e.g. www.thesagecafe.pk"></div>
+    <div class="fg"><label class="fl">Delivery Platforms</label><input class="fi" type="text" id="f_delivery" value="foodpanda"></div>
+  </div>
+  <div class="g2">
+    <div class="fg"><label class="fl">Google Business Profile Status</label>
+      <div class="pills">
+        <div class="pill"><input type="radio" name="gbp" id="gbp_y" value="Yes — fully set up"><label for="gbp_y">Fully set up</label></div>
+        <div class="pill"><input type="radio" name="gbp" id="gbp_p" value="Yes — partially set up"><label for="gbp_p">Partial</label></div>
+        <div class="pill"><input type="radio" name="gbp" id="gbp_n" value="Not set up"><label for="gbp_n">Not set up</label></div>
+      </div>
+    </div>
+    <div class="fg"><label class="fl">Cuisine / Category</label><input class="fi" type="text" id="f_cuisine" value="Continental, Pan-Asian, Mexican, Grill, Hi-Tea"></div>
+  </div>
+  <div class="fg"><label class="fl">Average Spend Per Person (PKR)</label><input class="fi" type="text" id="f_asp" value="PKR 1,800–2,500 (à la carte) · PKR 2,495+tax (Hi-Tea buffet)"></div>
+</div>
+
+<!-- ── S2: Menu & Deals ── -->
+<div class="fsec" data-s="2">
+  <div class="fey">Section 02 — 09</div>
+  <h1 class="fh1">Menu & Deals</h1>
+  <p class="fsub">Confirm your key menu items and active deals. These are the hooks we'll build all campaigns around — please be as accurate as possible.</p>
+  <div class="fg"><label class="fl">Hero Menu Items <span class="fhint" style="display:inline;font-style:normal;margin:0;font-size:12px;color:var(--muted)">(select all you want featured in campaigns)</span></label>
+    <div class="pills">
+      <div class="pill"><input type="checkbox" id="hi_hitea" value="Hi-Tea Buffet (Rs. 2,495+tax)"><label for="hi_hitea">Hi-Tea Buffet</label></div>
+      <div class="pill"><input type="checkbox" id="hi_steak" value="Beef Steaks (Rs. 2,495)"><label for="hi_steak">Beef Steaks</label></div>
+      <div class="pill"><input type="checkbox" id="hi_pasta" value="Signature Pastas (Rs. 1,895)"><label for="hi_pasta">Signature Pastas</label></div>
+      <div class="pill"><input type="checkbox" id="hi_burger" value="Gourmet Burgers (Rs. 1,395)"><label for="hi_burger">Gourmet Burgers</label></div>
+      <div class="pill"><input type="checkbox" id="hi_platter" value="Sage Combo Platter (Rs. 1,395)"><label for="hi_platter">Combo Platter</label></div>
+      <div class="pill"><input type="checkbox" id="hi_seafood" value="Seafood (Fish & Chips, Grilled Platter)"><label for="hi_seafood">Seafood</label></div>
+      <div class="pill"><input type="checkbox" id="hi_chicken" value="Continental Chicken (Rs. 2,095)"><label for="hi_chicken">Continental Chicken</label></div>
+      <div class="pill"><input type="checkbox" id="hi_shrimp" value="Dynamite Shrimps (Rs. 1,395)"><label for="hi_shrimp">Dynamite Shrimps</label></div>
+    </div>
+  </div>
+  <div class="dvdr"><span class="dvdr-lbl">Active Deals</span></div>
+  <div class="g2">
+    <div class="fg"><label class="fl">Lunch Deal (12pm–5pm)</label><input class="fi" id="f_lunch_deal" value="50% off second entrée — dine-in, lunch only. GST on actual menu price."></div>
+    <div class="fg"><label class="fl">Dinner Deal (5:30pm–12am)</label><input class="fi" id="f_dinner_deal" value="30% off second entrée — dine-in only. GST on actual menu price."></div>
+  </div>
+  <div class="g2">
+    <div class="fg"><label class="fl">Hi-Tea Price (per person)</label><input class="fi" id="f_hitea_price" value="Rs. 2,495 + Tax per person"></div>
+    <div class="fg"><label class="fl">Hi-Tea Availability</label>
+      <div class="pills">
+        <div class="pill"><input type="radio" name="htdays" id="htdays_d" value="Daily (4pm–6:30pm)"><label for="htdays_d">Daily</label></div>
+        <div class="pill"><input type="radio" name="htdays" id="htdays_w" value="Weekends only"><label for="htdays_w">Weekends only</label></div>
+        <div class="pill"><input type="radio" name="htdays" id="htdays_c" value="Client to confirm"><label for="htdays_c">I'll confirm</label></div>
+      </div>
+    </div>
+  </div>
+  <div class="fg"><label class="fl">Other Promotions / Seasonal Deals</label>
+    <textarea class="fi" id="f_promo_notes" rows="2" placeholder="e.g. Eid specials, Ramadan deals, corporate packages, birthday offers, Happy Hour..."></textarea>
+  </div>
+</div>
+
+<!-- ── S3: Target Audience ── -->
+<div class="fsec" data-s="3">
+  <div class="fey">Section 03 — 09</div>
+  <h1 class="fh1">Your Customers</h1>
+  <p class="fsub">Who are you feeding? The more specific you are here, the more targeted (and effective) the campaign will be.</p>
+  <div class="fg"><label class="fl">Primary Customer Segments <span class="fhint" style="display:inline;font-style:normal;margin:0;font-size:12px;color:var(--muted)">(select all that apply)</span></label>
+    <div class="pills">
+      <div class="pill"><input type="checkbox" id="ta_fam" value="Families (30–55, ABC)"><label for="ta_fam">Families</label></div>
+      <div class="pill"><input type="checkbox" id="ta_couple" value="Couples (date nights, anniversary)"><label for="ta_couple">Couples</label></div>
+      <div class="pill"><input type="checkbox" id="ta_ladies" value="Ladies Hi-Tea groups (25–45)"><label for="ta_ladies">Ladies' Hi-Tea Groups</label></div>
+      <div class="pill"><input type="checkbox" id="ta_youth" value="Young Professionals (22–35, Gulberg/DHA)"><label for="ta_youth">Young Professionals</label></div>
+      <div class="pill"><input type="checkbox" id="ta_corp" value="Corporate groups & team lunches"><label for="ta_corp">Corporate Lunches</label></div>
+      <div class="pill"><input type="checkbox" id="ta_foodie" value="Food enthusiasts & Foodies R Us community"><label for="ta_foodie">Food Enthusiasts</label></div>
+    </div>
+  </div>
+  <div class="g2">
+    <div class="fg"><label class="fl">Main Catchment Areas</label><input class="fi" type="text" id="f_geo" value="Gulberg, DHA, Model Town, Garden Town, Johar Town, Cantonment"></div>
+    <div class="fg"><label class="fl">Average Table Size</label><input class="fi" type="text" id="f_tablesize" value="3–5 people (social groups), 2 (couples)"></div>
+  </div>
+  <div class="g2">
+    <div class="fg"><label class="fl">Your Busiest Days / Times</label><input class="fi" type="text" id="f_busy" value="Friday–Sunday, Hi-Tea weekends, Eid/holiday periods"></div>
+    <div class="fg"><label class="fl">Slowest Days / Times (what we need to fix)</label><input class="fi" type="text" id="f_slow" value="Mon–Wed lunch, weekday afternoons (Hi-Tea), weekday evenings"></div>
+  </div>
+  <div class="fg"><label class="fl">What do customers love most? (compliments, reviews, repeat feedback)</label>
+    <textarea class="fi" id="f_loves" rows="3">Warm, premium ambiance; continental variety; generous portions; friendly staff; Hi-Tea spread value; reliable steak quality; cozy for meetings and family gatherings.</textarea>
+  </div>
+  <div class="fg"><label class="fl">Main complaints or pain points you're aware of</label>
+    <textarea class="fi" id="f_complaints" rows="2" placeholder="e.g. Long weekend waits, inconsistent steak doneness, limited parking, low awareness of deals..."></textarea>
+  </div>
+</div>
+
+<!-- ── S4: Social & Digital ── -->
+<div class="fsec" data-s="4">
+  <div class="fey">Section 04 — 09</div>
+  <h1 class="fh1">Social Media & Digital Presence</h1>
+  <p class="fsub">Your current digital footprint. Fill what you know — leave blank where you're unsure, we'll audit during onboarding.</p>
+  <div class="dvdr"><span class="dvdr-lbl">Instagram</span></div>
+  <div class="g3">
+    <div class="fg"><label class="fl">Current Followers</label><input class="fi" type="text" id="f_ig_followers" placeholder="e.g. 12,400"></div>
+    <div class="fg"><label class="fl">Avg. Engagement Rate</label><input class="fi" type="text" id="f_ig_er" placeholder="e.g. 2.3%"></div>
+    <div class="fg"><label class="fl">Posting Frequency</label><input class="fi" type="text" id="f_ig_freq" placeholder="e.g. 3x/week"></div>
+  </div>
+  <div class="fg"><label class="fl">Current Content Mix</label>
+    <div class="pills">
+      <div class="pill"><input type="checkbox" id="ig_food" value="Food photography"><label for="ig_food">Food photos</label></div>
+      <div class="pill"><input type="checkbox" id="ig_amb" value="Ambiance shots"><label for="ig_amb">Ambiance</label></div>
+      <div class="pill"><input type="checkbox" id="ig_reel" value="Reels / Videos"><label for="ig_reel">Reels</label></div>
+      <div class="pill"><input type="checkbox" id="ig_promo" value="Promotional offers"><label for="ig_promo">Promotions</label></div>
+      <div class="pill"><input type="checkbox" id="ig_ugc" value="Customer UGC reposts"><label for="ig_ugc">Customer UGC</label></div>
+      <div class="pill"><input type="checkbox" id="ig_story" value="Stories / Highlights"><label for="ig_story">Stories</label></div>
+    </div>
+  </div>
+  <div class="dvdr"><span class="dvdr-lbl">Facebook</span></div>
+  <div class="g3">
+    <div class="fg"><label class="fl">Page Likes / Followers</label><input class="fi" type="text" id="f_fb_likes" placeholder="e.g. 8,200"></div>
+    <div class="fg"><label class="fl">Running Meta Ads?</label>
+      <div class="pills">
+        <div class="pill"><input type="radio" name="fb_ads" id="fb_ads_y" value="Yes"><label for="fb_ads_y">Yes</label></div>
+        <div class="pill"><input type="radio" name="fb_ads" id="fb_ads_n" value="No"><label for="fb_ads_n">No</label></div>
+        <div class="pill"><input type="radio" name="fb_ads" id="fb_ads_u" value="Unknown"><label for="fb_ads_u">Not sure</label></div>
+      </div>
+    </div>
+    <div class="fg"><label class="fl">Monthly Ad Spend (if any)</label><input class="fi" type="text" id="f_adspend" placeholder="e.g. PKR 50,000/mo or None"></div>
+  </div>
+  <div class="dvdr"><span class="dvdr-lbl">Reviews & Reputation</span></div>
+  <div class="g3">
+    <div class="fg"><label class="fl">Google Rating</label><input class="fi" type="text" id="f_grating" placeholder="e.g. 4.1 / 5"></div>
+    <div class="fg"><label class="fl">foodpanda Rating</label><input class="fi" type="text" id="f_fp_rating" placeholder="e.g. 4.5 / 5"></div>
+    <div class="fg"><label class="fl">Key Review Themes</label><input class="fi" type="text" id="f_reviews" value="Good ambiance, variety, friendly staff, value for Hi-Tea"></div>
+  </div>
+  <div class="fg"><label class="fl">Past Influencer / Blogger Collaborations</label>
+    <textarea class="fi" id="f_influencers" rows="2" placeholder="e.g. No formal program. Some organic posts by food bloggers. Open to structured influencer work."></textarea>
+  </div>
+</div>
+
+<!-- ── S5: Foot Traffic ── -->
+<div class="fsec" data-s="5">
+  <div class="fey">Section 05 — 09</div>
+  <h1 class="fh1">Foot Traffic & The Core Problem</h1>
+  <p class="fsub">The most important section. The more honest and specific you are here, the more targeted our strategy will be.</p>
+  <div class="fg"><label class="fl">Primary Foot Traffic Challenge</label>
+    <div class="pills" style="flex-direction:column;gap:8px">
+      <div class="pill"><input type="radio" name="prob" id="pb_1" value="Weekday lunch occupancy is too low"><label for="pb_1">Weekday lunch occupancy is too low</label></div>
+      <div class="pill"><input type="radio" name="prob" id="pb_2" value="Hi-Tea seats aren't filling on weekdays"><label for="pb_2">Hi-Tea seats don't fill consistently (especially Mon–Thu)</label></div>
+      <div class="pill"><input type="radio" name="prob" id="pb_3" value="Brand awareness in Lahore is below potential"><label for="pb_3">Awareness in Lahore is below our potential</label></div>
+      <div class="pill"><input type="radio" name="prob" id="pb_4" value="Strong weekends but weak weekdays overall"><label for="pb_4">Strong weekends, weak weekdays overall</label></div>
+      <div class="pill"><input type="radio" name="prob" id="pb_5" value="Competition from newer cafés pulling audience"><label for="pb_5">New café competitors pulling our audience away</label></div>
+      <div class="pill"><input type="radio" name="prob" id="pb_6" value="Multiple challenges (see notes)"><label for="pb_6">Multiple challenges (explain below)</label></div>
+    </div>
+  </div>
+  <div class="fg"><label class="fl">Additional Context — Describe the Problem in Your Own Words</label>
+    <textarea class="fi" id="f_challenges" rows="4" placeholder="e.g. The 50% lunch deal exists but hardly anyone knows about it. Hi-Tea gets full on Sundays but is often empty Mon–Fri. We have strong regulars but aren't acquiring new customers consistently..."></textarea>
+  </div>
+  <div class="g2">
+    <div class="fg"><label class="fl">Current Monthly Covers / Dine-ins (estimate)</label><input class="fi" type="text" id="f_walkins" placeholder="e.g. ~600–900 covers/month"></div>
+    <div class="fg"><label class="fl">Target Monthly Covers (your 6-month goal)</label><input class="fi" type="text" id="f_target_covers" placeholder="e.g. 1,500 covers/month"></div>
+  </div>
+  <div class="fg"><label class="fl">Which time slots need filling most urgently?</label>
+    <div class="pills">
+      <div class="pill"><input type="checkbox" id="ts_wdlunch" value="Weekday Lunch (Mon–Fri, 12–4pm)"><label for="ts_wdlunch">Weekday Lunch</label></div>
+      <div class="pill"><input type="checkbox" id="ts_hitea" value="Hi-Tea (Daily 4–6:30pm)"><label for="ts_hitea">Hi-Tea (all days)</label></div>
+      <div class="pill"><input type="checkbox" id="ts_wdhitea" value="Weekday Hi-Tea specifically"><label for="ts_wdhitea">Weekday Hi-Tea</label></div>
+      <div class="pill"><input type="checkbox" id="ts_wknd" value="Weekend Dinner (Fri–Sat evenings)"><label for="ts_wknd">Weekend Dinner</label></div>
+      <div class="pill"><input type="checkbox" id="ts_corp" value="Corporate group bookings"><label for="ts_corp">Corporate Bookings</label></div>
+    </div>
+  </div>
+</div>
+
+<!-- ── S6: Budget & Engagement ── -->
+<div class="fsec" data-s="6">
+  <div class="fey">Section 06 — 09</div>
+  <h1 class="fh1">Budget & Engagement</h1>
+  <p class="fsub">This shapes the scope and scale of the campaign. No commitment yet — just your preferred range so we can tailor the proposal accordingly.</p>
+  <div class="notice">⚠️ <strong>Note:</strong> These are ranges for planning purposes. We'll discuss exact numbers once we understand your goals fully.</div>
+  <div class="g2">
+    <div class="fg"><label class="fl">Monthly Marketing Retainer (PKR)</label>
+      <select class="fi" id="f_budget">
+        <option value="">— Please select —</option>
+        <option value="Up to PKR 50,000/month (starter)">Up to PKR 50,000/month — social only</option>
+        <option value="PKR 50,000–100,000/month (mid-tier)">PKR 50,000–100,000/month — social + influencers</option>
+        <option value="PKR 100,000–200,000/month (full campaign)">PKR 100,000–200,000/month — full multi-channel</option>
+        <option value="PKR 200,000+/month (aggressive growth)">PKR 200,000+/month — aggressive growth mode</option>
+        <option value="Not sure yet — happy to discuss">Not sure yet — happy to discuss</option>
+      </select>
+    </div>
+    <div class="fg"><label class="fl">One-Time Creative / Setup Budget (PKR)</label>
+      <input class="fi" type="text" id="f_setup_budget" placeholder="e.g. PKR 80,000–150,000 (photoshoot, video, assets)">
+    </div>
+  </div>
+  <div class="g2">
+    <div class="fg"><label class="fl">Preferred Engagement Model</label>
+      <div class="pills" style="flex-direction:column;gap:8px">
+        <div class="pill"><input type="radio" name="eng" id="eng_mgd" value="Full management (all channels handled)"><label for="eng_mgd">Full management — everything handled by us</label></div>
+        <div class="pill"><input type="radio" name="eng" id="eng_cons" value="Consulting + Sage team executes"><label for="eng_cons">Strategy only — your team executes</label></div>
+        <div class="pill"><input type="radio" name="eng" id="eng_proj" value="Project-based (specific campaigns)"><label for="eng_proj">Project-based campaigns only</label></div>
+      </div>
+    </div>
+    <div class="fg"><label class="fl">Contract Preference</label>
+      <div class="pills" style="flex-direction:column;gap:8px">
+        <div class="pill"><input type="radio" name="ctype" id="ct_3" value="3-month trial"><label for="ct_3">3-month trial</label></div>
+        <div class="pill"><input type="radio" name="ctype" id="ct_6" value="6-month campaign"><label for="ct_6">6-month campaign (recommended)</label></div>
+        <div class="pill"><input type="radio" name="ctype" id="ct_12" value="12-month retainer"><label for="ct_12">12-month retainer</label></div>
+      </div>
+    </div>
+  </div>
+  <div class="dvdr"><span class="dvdr-lbl">Promotion Channels</span></div>
+  <div class="fg"><label class="fl">Which channels interest you most?</label>
+    <div class="pills" style="flex-direction:column;gap:8px">
+      <div class="pill"><input type="checkbox" id="ch_smm" value="Instagram & Facebook organic content (daily)"><label for="ch_smm">Instagram & Facebook (organic daily content)</label></div>
+      <div class="pill"><input type="checkbox" id="ch_paid" value="Meta Paid Ads (Facebook & Instagram, geo-targeted Lahore)"><label for="ch_paid">Meta Paid Ads — Lahore geo-targeted</label></div>
+      <div class="pill"><input type="checkbox" id="ch_inf" value="Influencer Collaborations (Asad Sheikh + micro-influencers)"><label for="ch_inf">Influencer Collaborations (Asad Sheikh anchor)</label></div>
+      <div class="pill"><input type="checkbox" id="ch_tiktok" value="TikTok (food video content, Hi-Tea showcases)"><label for="ch_tiktok">TikTok (Hi-Tea and food showcases)</label></div>
+      <div class="pill"><input type="checkbox" id="ch_whatsapp" value="WhatsApp broadcast lists (weekly deals + Hi-Tea reminders)"><label for="ch_whatsapp">WhatsApp Campaigns (weekly deals)</label></div>
+      <div class="pill"><input type="checkbox" id="ch_google" value="Google Ads (location-targeted: 'hi-tea Lahore', 'restaurant Gulberg')"><label for="ch_google">Google Ads — Hi-Tea search intent</label></div>
+      <div class="pill"><input type="checkbox" id="ch_seo" value="Google Business Profile optimisation + review generation"><label for="ch_seo">Google Business Profile + Review Drive</label></div>
+      <div class="pill"><input type="checkbox" id="ch_pr" value="Food media / PR features (Dawn Food, Brandsynario, etc.)"><label for="ch_pr">Food Media & PR Features</label></div>
+    </div>
+  </div>
+</div>
+
+<!-- ── S7: Goals & KPIs ── -->
+<div class="fsec" data-s="7">
+  <div class="fey">Section 07 — 09</div>
+  <h1 class="fh1">Goals & Success Metrics</h1>
+  <p class="fsub">We've pre-filled realistic 6-month targets based on Lahore market benchmarks. Please fill in your current baselines — and adjust the targets if you have different expectations.</p>
+  <div class="kpi-hdr"><span>Metric</span><span>Your Current Baseline</span><span>6-Month Target</span></div>
+  <div class="kpi-row"><div class="kpi-m">Monthly covers (total dine-in)</div><input class="fi" id="kb0" placeholder="e.g. ~600/month"><input class="fi" id="kt0" value="+60–80% from baseline"></div>
+  <div class="kpi-row"><div class="kpi-m">Hi-Tea weekday occupancy</div><input class="fi" id="kb1" placeholder="e.g. ~25% weekdays"><input class="fi" id="kt1" value="55–65% weekdays"></div>
+  <div class="kpi-row"><div class="kpi-m">Hi-Tea weekend occupancy</div><input class="fi" id="kb2" placeholder="e.g. ~65% weekends"><input class="fi" id="kt2" value="85–95% weekends (near-full)"></div>
+  <div class="kpi-row"><div class="kpi-m">Instagram followers</div><input class="fi" id="kb3" placeholder="e.g. 12,400 currently"><input class="fi" id="kt3" value="+8,000–12,000 new (6 months)"></div>
+  <div class="kpi-row"><div class="kpi-m">Instagram engagement rate</div><input class="fi" id="kb4" placeholder="e.g. 2–3% currently"><input class="fi" id="kt4" value="4.5–6%"></div>
+  <div class="kpi-row"><div class="kpi-m">Google Business Profile views/month</div><input class="fi" id="kb5" placeholder="Check Google Search Console"><input class="fi" id="kt5" value="3,000–5,000 views/month"></div>
+  <div class="kpi-row"><div class="kpi-m">Total Google reviews</div><input class="fi" id="kb6" placeholder="e.g. Current count"><input class="fi" id="kt6" value="+200 new, avg 4.3+"></div>
+  <div class="kpi-row"><div class="kpi-m">Influencer posts / features</div><input class="fi" id="kb7" placeholder="e.g. 0 currently"><input class="fi" id="kt7" value="30+ posts incl. Asad Food Mob"></div>
+  <div class="kpi-row"><div class="kpi-m">Online reservations/month</div><input class="fi" id="kb8" placeholder="e.g. ~30 currently"><input class="fi" id="kt8" value="150+ (WhatsApp + phone)"></div>
+</div>
+
+<!-- ── S8: Brand Voice ── -->
+<div class="fsec" data-s="8">
+  <div class="fey">Section 08 — 09</div>
+  <h1 class="fh1">Brand Voice & Creative Direction</h1>
+  <p class="fsub">How Sage should look and sound across every campaign. Your answers here guide all content we create.</p>
+  <div class="fg"><label class="fl">Brand Personality — how would you describe Sage's tone?</label>
+    <div class="pills">
+      <div class="pill"><input type="radio" name="tone" id="t_ref" value="Refined & Elegant"><label for="t_ref">Refined & Elegant</label></div>
+      <div class="pill"><input type="radio" name="tone" id="t_warm" value="Warm & Welcoming"><label for="t_warm">Warm & Welcoming</label></div>
+      <div class="pill"><input type="radio" name="tone" id="t_cool" value="Cool & Aspirational"><label for="t_cool">Cool & Aspirational</label></div>
+      <div class="pill"><input type="radio" name="tone" id="t_bold" value="Bold & Energetic"><label for="t_bold">Bold & Energetic</label></div>
+    </div>
+  </div>
+  <div class="g2">
+    <div class="fg"><label class="fl">Visual Identity (current)</label>
+      <textarea class="fi" id="f_visual" rows="3">Dark, moody backgrounds with warm amber/green tones. Serif typography. Rich food photography with dramatic lighting. Premium continental feel.</textarea>
+    </div>
+    <div class="fg"><label class="fl">Topics / Angles to Avoid</label>
+      <textarea class="fi" id="f_avoid" rows="3" placeholder="e.g. Don't compare prices with competitors. Avoid overly informal captions. Don't mention other branches."></textarea>
+    </div>
+  </div>
+  <div class="fg"><label class="fl">Content Formats to Prioritise</label>
+    <div class="pills">
+      <div class="pill"><input type="checkbox" id="cf_reel" value="Short-form Reels (15–30 sec food porn)"><label for="cf_reel">Short Reels</label></div>
+      <div class="pill"><input type="checkbox" id="cf_story" value="Daily Stories (behind-scenes, today's special)"><label for="cf_story">Daily Stories</label></div>
+      <div class="pill"><input type="checkbox" id="cf_foodphoto" value="Professional food photography (static)"><label for="cf_foodphoto">Pro Food Photography</label></div>
+      <div class="pill"><input type="checkbox" id="cf_ugc" value="Customer UGC reposts"><label for="cf_ugc">Customer UGC</label></div>
+      <div class="pill"><input type="checkbox" id="cf_inf" value="Influencer-created content"><label for="cf_inf">Influencer content</label></div>
+      <div class="pill"><input type="checkbox" id="cf_offers" value="Deal/offer graphics (Hi-Tea, lunch deal)"><label for="cf_offers">Deal graphics</label></div>
+      <div class="pill"><input type="checkbox" id="cf_tiktok" value="TikTok food challenge / trend videos"><label for="cf_tiktok">TikTok trends</label></div>
+    </div>
+  </div>
+  <div class="fg"><label class="fl">Additional Brand Notes, Seasonal Events, Special Requests</label>
+    <textarea class="fi" id="f_brand_notes" rows="3" placeholder="e.g. Plan around Eid, Valentines, Mothers Day. Logo usage rules. Colours to use/avoid. Anything else important for our team to know..."></textarea>
+  </div>
+</div>
+
+<!-- ── S9: Sign-Off ── -->
+<div class="fsec" data-s="9">
+  <div class="fey">Section 09 — 09</div>
+  <h1 class="fh1">Your Details & Sign-Off</h1>
+  <p class="fsub">Last step — your contact details so we can follow up, and any final notes before you submit.</p>
+  <div class="g2">
+    <div class="fg"><label class="fl">Your Name <span class="r">*</span></label><input class="fi" type="text" id="f_contact" placeholder="e.g. Ahmad Mirza"></div>
+    <div class="fg"><label class="fl">Your Role / Title</label><input class="fi" type="text" id="f_contact_role" placeholder="e.g. General Manager, Owner"></div>
+  </div>
+  <div class="g2">
+    <div class="fg"><label class="fl">Email Address <span class="r">*</span></label><input class="fi" type="email" id="f_email" placeholder="e.g. manager@sagecafe.pk"></div>
+    <div class="fg"><label class="fl">WhatsApp / Phone</label><input class="fi" type="text" id="f_contact_info" placeholder="e.g. +92 300 1234567"></div>
+  </div>
+  <div class="g2">
+    <div class="fg"><label class="fl">Preferred Campaign Start Date</label><input class="fi" type="date" id="f_start"></div>
+    <div class="fg"><label class="fl">Best Time to Call / Meet</label><input class="fi" type="text" id="f_call_time" placeholder="e.g. Weekday afternoons after 3pm"></div>
+  </div>
+  <div class="fg"><label class="fl">Anything else you'd like us to know?</label>
+    <textarea class="fi" id="f_notes" rows="4" placeholder="Any context, constraints, previous marketing experiences, specific goals, or questions you have for us before the proposal..."></textarea>
+  </div>
+  <div class="ibox">
+    <div class="ibox-icon">💾</div>
+    <div class="ibox-txt">
+      <strong>How this works:</strong> When you click "Save & Submit Brief" below, your answers will be downloaded as a data file. Please send this file to us via WhatsApp or email — we'll use it to build your customised proposal within 48 hours.
+    </div>
+  </div>
+</div>
+
+</div><!-- /fmain -->
+</div><!-- /page-body -->
+
+<!-- FOOTER NAV -->
+<div id="ffoot">
+  <div class="ffoot-info" id="ffoot-info">Step 1 of 9</div>
+  <div class="btn-row">
+    <button class="btn b-sec" id="btn-back" onclick="nav(-1)" style="display:none">
+      <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>Back
+    </button>
+    <button class="btn b-nav" id="btn-next" onclick="nav(1)">
+      Continue <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+    </button>
+  </div>
+</div>
+
+<!-- SUCCESS SCREEN -->
+<div id="success-screen">
+  <div class="success-icon">✅</div>
+  <div class="success-title">Brief Saved!</div>
+  <div class="success-sub">Your brief has been downloaded as a <strong style="color:var(--amber)">JSON file</strong>. Please send it to us via WhatsApp or email and we'll have your proposal ready within 48 hours.</div>
+  <button class="success-btn" onclick="restartForm()">← Go Back & Edit</button>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+const TOTAL = 9;
+let cur = 1;
+let done = new Set([1]);
+
+const SECS = [
+  {n:1, lbl:'Restaurant Overview'},
+  {n:2, lbl:'Menu & Deals'},
+  {n:3, lbl:'Your Customers'},
+  {n:4, lbl:'Social & Digital'},
+  {n:5, lbl:'Foot Traffic'},
+  {n:6, lbl:'Budget & Channels'},
+  {n:7, lbl:'Goals & KPIs'},
+  {n:8, lbl:'Brand Voice'},
+  {n:9, lbl:'Submit Brief'},
+];
+
+window.addEventListener('DOMContentLoaded', () => {
+  buildNav();
+  // Set default date: 2 weeks from now
+  const d = document.getElementById('f_start');
+  if(d) d.value = new Date(Date.now() + 14*24*60*60*1000).toISOString().split('T')[0];
+  // Pre-check sensible defaults
+  checkR('gbp', 'Yes — partially set up');
+  checkR('htdays', 'Daily (4pm–6:30pm)');
+  checkR('prob', 'Hi-Tea seats aren\'t filling on weekdays');
+  checkR('tone', 'Warm & Welcoming');
+  checkR('eng', 'Full management (all channels handled)');
+  checkR('ctype', '6-month campaign');
+  checkCB(['ta_fam','ta_couple','ta_ladies','ta_youth','ta_foodie']);
+  checkCB(['hi_steak','hi_hitea','hi_pasta','hi_burger','hi_platter','hi_shrimp']);
+  checkCB(['ch_smm','ch_paid','ch_inf','ch_whatsapp','ch_seo']);
+  checkCB(['ts_wdlunch','ts_hitea','ts_wdhitea']);
+  checkCB(['ig_food','ig_amb','ig_reel','ig_promo']);
+  checkCB(['cf_reel','cf_foodphoto','cf_offers','cf_ugc']);
+  goTo(1); updateUI();
+});
+
+function checkR(name, value) {
+  const el = document.querySelector(`input[name="${name}"][value="${value}"]`);
+  if(el) el.checked = true;
+}
+function checkCB(ids) {
+  ids.forEach(id => { const el = document.getElementById(id); if(el) el.checked = true; });
+}
+function buildNav() {
+  const nav = document.getElementById('fnav');
+  nav.innerHTML = SECS.map(s => `
+    <div class="sni" id="sn${s.n}" onclick="goTo(${s.n})">
+      <div class="sni-dot"><span>${s.n}</span></div>
+      <div class="sni-lbl">${s.lbl}</div>
+    </div>`).join('');
+}
+
+function gv(id) { const e = document.getElementById(id); return e ? e.value.trim() : ''; }
+function radio(name) { const e = document.querySelector(`input[name="${name}"]:checked`); return e ? e.value : ''; }
+function chk(ids) { return ids.filter(id => document.getElementById(id)?.checked).map(id => document.getElementById(id).value); }
+
+function nav(dir) {
+  const next = cur + dir;
+  if(next < 1 || next > TOTAL) return;
+  goTo(next);
+}
+function goTo(n) {
+  document.querySelector(`.fsec[data-s="${cur}"]`)?.classList.remove('active');
+  document.querySelector(`.fsec[data-s="${n}"]`)?.classList.add('active');
+  cur = n; done.add(n); updateUI();
+  document.getElementById('fmain')?.scrollTo({top:0, behavior:'smooth'});
+}
+
+function updateUI() {
+  document.getElementById('ffoot-info').textContent = `Step ${cur} of ${TOTAL}`;
+  const pct = Math.round(done.size / TOTAL * 100);
+  document.getElementById('pbar').style.width = pct + '%';
+  document.getElementById('ppct').textContent = pct + '%';
+  document.getElementById('btn-back').style.display = cur > 1 ? 'flex' : 'none';
+
+  const nb = document.getElementById('btn-next');
+  if(cur === TOTAL) {
+    nb.innerHTML = `<svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Save & Submit Brief`;
+    nb.className = 'btn b-save';
+    nb.onclick = saveBrief;
+  } else {
+    nb.innerHTML = `Continue <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>`;
+    nb.className = 'btn b-nav';
+    nb.onclick = () => nav(1);
+  }
+
+  SECS.forEach(s => {
+    const el = document.getElementById(`sn${s.n}`);
+    if(!el) return;
+    el.className = 'sni' + (s.n === cur ? ' active' : done.has(s.n) && s.n !== cur ? ' done' : '');
+  });
+}
+
+function readData() {
+  return {
+    _meta: {
+      savedAt: new Date().toISOString(),
+      ref: 'SAGE-LHR-2026-' + Date.now(),
+      formVersion: '1.0',
+    },
+    restaurant: {
+      name: gv('f_co') || 'Sage Café & Grill',
+      branch: gv('f_branch'),
+      address: gv('f_addr'),
+      phone: gv('f_tel'),
+      hours: gv('f_hours'),
+      instagram: gv('f_ig'),
+      facebook: gv('f_fb'),
+      website: gv('f_web'),
+      delivery: gv('f_delivery'),
+      googleBusinessProfile: radio('gbp'),
+      cuisine: gv('f_cuisine'),
+      avgSpendPerPerson: gv('f_asp'),
+    },
+    menu: {
+      heroItems: chk(['hi_hitea','hi_steak','hi_pasta','hi_burger','hi_platter','hi_seafood','hi_chicken','hi_shrimp']),
+      lunchDeal: gv('f_lunch_deal'),
+      dinnerDeal: gv('f_dinner_deal'),
+      hiteaPrice: gv('f_hitea_price'),
+      hiteaAvailability: radio('htdays'),
+      otherPromos: gv('f_promo_notes'),
+    },
+    audience: {
+      segments: chk(['ta_fam','ta_couple','ta_ladies','ta_youth','ta_corp','ta_foodie']),
+      catchmentArea: gv('f_geo'),
+      avgTableSize: gv('f_tablesize'),
+      busiestTimes: gv('f_busy'),
+      slowestTimes: gv('f_slow'),
+      customerLoves: gv('f_loves'),
+      customerComplaints: gv('f_complaints'),
+    },
+    social: {
+      igFollowers: gv('f_ig_followers'),
+      igEngagementRate: gv('f_ig_er'),
+      igPostingFrequency: gv('f_ig_freq'),
+      igContentMix: chk(['ig_food','ig_amb','ig_reel','ig_promo','ig_ugc','ig_story']),
+      fbFollowers: gv('f_fb_likes'),
+      metaAdsRunning: radio('fb_ads'),
+      monthlyAdSpend: gv('f_adspend'),
+      googleRating: gv('f_grating'),
+      foodpandaRating: gv('f_fp_rating'),
+      reviewThemes: gv('f_reviews'),
+      pastInfluencerWork: gv('f_influencers'),
+    },
+    footTraffic: {
+      primaryChallenge: radio('prob'),
+      challengeDetails: gv('f_challenges'),
+      currentMonthlyCovers: gv('f_walkins'),
+      targetMonthlyCovers: gv('f_target_covers'),
+      timeSlotsToFill: chk(['ts_wdlunch','ts_hitea','ts_wdhitea','ts_wknd','ts_corp']),
+    },
+    budget: {
+      monthlyRetainer: gv('f_budget'),
+      setupBudget: gv('f_setup_budget'),
+      engagementModel: radio('eng'),
+      contractPreference: radio('ctype'),
+      preferredChannels: chk(['ch_smm','ch_paid','ch_inf','ch_tiktok','ch_whatsapp','ch_google','ch_seo','ch_pr']),
+    },
+    kpis: [
+      {metric:'Monthly covers (total dine-in)', baseline: gv('kb0'), target: gv('kt0')},
+      {metric:'Hi-Tea weekday occupancy', baseline: gv('kb1'), target: gv('kt1')},
+      {metric:'Hi-Tea weekend occupancy', baseline: gv('kb2'), target: gv('kt2')},
+      {metric:'Instagram followers', baseline: gv('kb3'), target: gv('kt3')},
+      {metric:'Instagram engagement rate', baseline: gv('kb4'), target: gv('kt4')},
+      {metric:'Google Business Profile views/month', baseline: gv('kb5'), target: gv('kt5')},
+      {metric:'Total Google reviews', baseline: gv('kb6'), target: gv('kt6')},
+      {metric:'Influencer posts / features', baseline: gv('kb7'), target: gv('kt7')},
+      {metric:'Online reservations/month', baseline: gv('kb8'), target: gv('kt8')},
+    ],
+    brand: {
+      personality: radio('tone'),
+      visualIdentity: gv('f_visual'),
+      avoidTopics: gv('f_avoid'),
+      contentFormats: chk(['cf_reel','cf_story','cf_foodphoto','cf_ugc','cf_inf','cf_offers','cf_tiktok']),
+      brandNotes: gv('f_brand_notes'),
+    },
+    contact: {
+      name: gv('f_contact'),
+      role: gv('f_contact_role'),
+      email: gv('f_email'),
+      whatsapp: gv('f_contact_info'),
+      preferredCampaignStart: gv('f_start'),
+      bestTimeToCall: gv('f_call_time'),
+      additionalNotes: gv('f_notes'),
+    },
+  };
+}
+
+function saveBrief() {
+  const name = gv('f_contact');
+  const email = gv('f_email');
+  if(!name) { showToast('⚠️ Please enter your name in Section 9'); goTo(9); return; }
+
+  const data = readData();
+  const json = JSON.stringify(data, null, 2);
+  const blob = new Blob([json], {type: 'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `sage-brief-${name.replace(/\s+/g,'-').toLowerCase()}-${new Date().toISOString().split('T')[0]}.json`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+
+  // Show success
+  document.getElementById('success-screen').classList.add('show');
+}
+
+function restartForm() {
+  document.getElementById('success-screen').classList.remove('show');
+  goTo(9);
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3500);
+}
+</script>
+</body>
+</html>
